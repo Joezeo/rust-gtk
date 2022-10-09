@@ -5,6 +5,8 @@ use std::rc::Rc;
 
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
+// GSK_RENDERER=cairo
+// Use this environment parameter can reduce memory use
 fn main() {
     // Create a new application
     let app = Application::builder().application_id(APP_ID).build();
@@ -51,6 +53,8 @@ fn build_ui(app: &Application) {
     // Create a window
     let window = ApplicationWindow::builder()
         .application(app)
+        .default_width(1280)
+        .default_height(800)
         .title("My GTK App")
         .child(&gtk_box)
         .build();
