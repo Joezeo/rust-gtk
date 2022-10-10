@@ -2,6 +2,7 @@ use gtk::prelude::*;
 use gtk::{Application, ApplicationWindow, Button, Orientation};
 use std::cell::Cell;
 use std::rc::Rc;
+use gtk::glib::OptionArg::String;
 
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
