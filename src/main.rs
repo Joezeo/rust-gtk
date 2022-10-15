@@ -5,6 +5,8 @@ use glib::clone;
 use gtk::{Application, ApplicationWindow, Button, glib, Orientation};
 use gtk::prelude::*;
 
+mod custom_button;
+
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
 // GSK_RENDERER=cairo
