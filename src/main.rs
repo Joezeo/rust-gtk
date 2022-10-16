@@ -1,11 +1,12 @@
+mod custom_button;
+
 use std::cell::Cell;
 use std::rc::Rc;
 
 use glib::clone;
 use gtk::{Application, ApplicationWindow, Button, glib, Orientation};
 use gtk::prelude::*;
-
-mod custom_button;
+use crate::custom_button::CustomButton;
 
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
@@ -23,6 +24,12 @@ fn main() {
 }
 
 fn build_ui(app: &Application) {
+    let button = CustomButton::new();
+    button.set_margin_top(12);
+    button.set_margin_bottom(12);
+    button.set_margin_start(12);
+    button.set_margin_end(12);
+
     // Create two buttons
     let button_increase = Button::builder()
         .label("Increase")
@@ -58,6 +65,7 @@ fn build_ui(app: &Application) {
         .build();
     gtk_box.append(&button_increase);
     gtk_box.append(&button_decrease);
+    gtk_box.append(&button);
 
     // Create a window
     let window = ApplicationWindow::builder()

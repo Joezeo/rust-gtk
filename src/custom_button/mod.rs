@@ -18,3 +18,9 @@ impl CustomButton {
         Object::new(&[("label", &label)]).expect("Failed to create `CustomButton`.")
     }
 }
+
+impl Default for CustomButton {
+    fn default() -> Self {
+        Self::new()
+    }
+}
