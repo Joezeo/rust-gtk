@@ -1,6 +1,6 @@
-use gtk::glib::subclass::{Signal, SignalType};
+use gtk::glib::subclass::{Signal};
 use gtk::glib::{self, ParamSpecInt};
-use gtk::glib::{BindingFlags, ParamSpec, Type};
+use gtk::glib::{BindingFlags, ParamSpec};
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use once_cell::sync::Lazy;
@@ -51,8 +51,8 @@ impl ObjectImpl for CustomButton {
         static SIGNALS: Lazy<Vec<Signal>> = Lazy::new(|| {
             vec![Signal::builder(
                 "max-number-reached",
-                &[SignalType::with_static_scope(i32::static_type())],
-                SignalType::with_static_scope(Type::UNIT),
+                &[i32::static_type().into()],
+                <()>::static_type().into(),
             )
             .build()]
         });

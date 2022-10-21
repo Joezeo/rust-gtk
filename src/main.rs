@@ -16,8 +16,8 @@ const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 // $env:GSK_RENDERER="cairo"
 // Use this environment parameter can reduce memory use
 fn main() {
-    // load the envrioment
-    dotenv::dotenv().ok();
+    // Set the rendering envrioment
+    std::env::set_var("GSK_RENDERER", "cairo");
 
     // Create a new application
     let app = Application::builder().application_id(APP_ID).build();
