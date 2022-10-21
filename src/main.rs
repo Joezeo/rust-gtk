@@ -1,34 +1,84 @@
+#![allow(dead_code)]
 mod custom_button;
+mod gobject_value;
 
 use std::cell::Cell;
 use std::rc::Rc;
 
-use glib::clone;
-use gtk::{Application, ApplicationWindow, Button, glib, Orientation};
-use gtk::prelude::*;
 use crate::custom_button::CustomButton;
+use glib::clone;
+use gtk::glib::{closure_local, BindingFlags, Value};
+use gtk::prelude::*;
+use gtk::{glib, Align, Application, ApplicationWindow, Box, Button, Orientation, Switch};
 
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
-// GSK_RENDERER=cairo
+// $env:GSK_RENDERER="cairo"
 // Use this environment parameter can reduce memory use
 fn main() {
+    // load the envrioment
+    dotenv::dotenv().ok();
+
     // Create a new application
     let app = Application::builder().application_id(APP_ID).build();
 
     // Connect to "activate" signal of `app`
-    app.connect_activate(build_ui);
+    app.connect_activate(build_button_ui);
 
     // Run the application
     app.run();
 }
 
-fn build_ui(app: &Application) {
-    let button = CustomButton::new();
-    button.set_margin_top(12);
-    button.set_margin_bottom(12);
-    button.set_margin_start(12);
-    button.set_margin_end(12);
+fn build_button_ui(app: &Application) {
+    let button_1 = CustomButton::new();
+    let button_2 = CustomButton::new();
+    button_1.set_margin_top(12);
+    button_1.set_margin_bottom(12);
+    button_1.set_margin_start(12);
+    button_1.set_margin_end(12);
+    button_2.set_margin_top(12);
+    button_2.set_margin_bottom(12);
+    button_2.set_margin_start(12);
+    button_2.set_margin_end(12);
+
+    // Assure number of button_2 is always 1 higher than number of button_1
+    button_1
+        .bind_property("number", &button_2, "number")
+        // Transform 'number' from button_1 to button_2
+        .transform_to(|_, number: &Value| {
+            let incremented_number = number.get::<i32>().unwrap() + 1;
+            Some(incremented_number.to_value())
+        })
+        // Transform 'number' from button_2 to button_1
+        .transform_from(|_, number: &Value| {
+            let decremented_number = number.get::<i32>().unwrap() - 1;
+            Some(decremented_number.to_value())
+        })
+        .flags(BindingFlags::BIDIRECTIONAL | BindingFlags::SYNC_CREATE)
+        .build();
+
+    // The closure will be called,
+    // whenever the "number" property has changed.
+    button_1.connect_notify_local(Some("number"), move |button, _| {
+        let number = button.property::<i32>("number");
+        println!("The current number of `button_1` is {}", number);
+    });
+
+    // button_2.connect_clicked(move |_| {
+    //     println!("Hello Wrold!");
+    // });
+
+    button_2.connect_closure(
+        "clicked",
+        false,
+        closure_local!(move |_button: Button| {
+            println!("Hello Wrold!");
+        }),
+    );
+
+    button_2.connect_closure("max-number-reached", false, closure_local!(move |_button: CustomButton, number: i32| {
+        println!("The maximum  number {} has been reached.", number);
+    }));
 
     // Create two buttons
     let button_increase = Button::builder()
@@ -65,13 +115,57 @@ fn build_ui(app: &Application) {
         .build();
     gtk_box.append(&button_increase);
     gtk_box.append(&button_decrease);
-    gtk_box.append(&button);
+    gtk_box.append(&button_1);
+    gtk_box.append(&button_2);
 
     // Create a window
     let window = ApplicationWindow::builder()
         .application(app)
         .default_width(1280)
         .default_height(800)
+        .title("My GTK App")
+        .child(&gtk_box)
+        .build();
+
+    // Present the window
+    window.present();
+}
+
+fn build_switch_ui(app: &Application) {
+    let switch1 = Switch::new();
+    let switch2 = Switch::new();
+
+    // switch.set_state(true);
+    // let current_state = switch.state();
+
+    // println!("the current state is {}", current_state);
+
+    // switch1.set_property("state", true);
+    // let state = switch1.property::<bool>("state");
+    // println!("the current state is {}", state);
+
+    switch1
+        .bind_property("state", &switch2, "state")
+        .flags(BindingFlags::BIDIRECTIONAL)
+        .build();
+
+    // Set up box
+    let gtk_box = Box::builder()
+        .margin_top(12)
+        .margin_bottom(12)
+        .margin_start(12)
+        .margin_end(12)
+        .valign(Align::Center)
+        .halign(Align::Center)
+        .spacing(12)
+        .orientation(Orientation::Vertical)
+        .build();
+    gtk_box.append(&switch1);
+    gtk_box.append(&switch2);
+
+    // Create a window
+    let window = ApplicationWindow::builder()
+        .application(app)
         .title("My GTK App")
         .child(&gtk_box)
         .build();
