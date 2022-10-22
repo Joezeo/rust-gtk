@@ -1,13 +1,14 @@
 // this proc-marco remove the cmd terminal
 #![windows_subsystem = "windows"]
 
+use gtk::Align;
+use gtk::gdk::Display;
+use gtk::prelude::*;
 use gtk::Application;
 use gtk::ApplicationWindow;
 use gtk::Button;
 use gtk::CssProvider;
 use gtk::StyleContext;
-use gtk::gdk::Display;
-use gtk::prelude::*;
 
 const APP_ID: &str = "org.gtk_rs.Css1";
 
@@ -40,19 +41,39 @@ fn load_css() {
 
 fn build_ui(app: &Application) {
     // Create button
-    let button = Button::builder()
-        .label("Press me!")
+    let button_1 = Button::with_label("Press me!");
+    let button_2 = Button::with_label("Pressm me!");
+
+    let button_3 = Button::with_label("Destructive");
+    let button_4 = Button::with_label("Suggested");
+
+    button_1.add_css_class("button-1");
+    button_2.set_widget_name("button-2");
+
+    button_3.add_css_class("destructive-action");
+    button_4.add_css_class("suggested-action");
+
+    let gtk_box = gtk::Box::builder()
         .margin_top(12)
         .margin_bottom(12)
         .margin_start(12)
         .margin_end(12)
+        .halign(Align::Center)
+        .valign(Align::Center)
+        .spacing(12)
         .build();
+
+    gtk_box.append(&button_1);
+    gtk_box.append(&button_2);
+    gtk_box.append(&button_3);
+    gtk_box.append(&button_4);
 
     // Create a new window and show it
     let window = ApplicationWindow::builder()
         .application(app)
         .title("My GTK App")
-        .child(&button)
+        .child(&gtk_box)
         .build();
+
     window.show();
 }

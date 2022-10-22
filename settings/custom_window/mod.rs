@@ -20,7 +20,7 @@ glib::wrapper! {
 
 impl Window {
     pub fn new(app: &Application) -> Self {
-        Object::new(&[("application", app)]).expect("Failed to generate application window.")
+        Object::new(&[("application", app)])
     }
 
     fn setup_settings(&self) {

@@ -17,8 +17,7 @@ impl ObjectSubclass for Window {
 }
 
 impl ObjectImpl for Window {
-    fn constructed(&self, obj: &Self::Type) {
-        self.parent_constructed(obj);
+    fn constructed(&self) {
         let instance = self.instance();
         instance.setup_settings();
         instance.load_window_size();
@@ -28,7 +27,7 @@ impl ObjectImpl for Window {
 impl WidgetImpl for Window {}
 
 impl WindowImpl for Window {
-    fn close_request(&self, _window: &Self::Type) -> glib::signal::Inhibit {
+    fn close_request(&self) -> glib::signal::Inhibit {
         // Save window size
         self.instance().save_window_size().expect("Failed to save window state.");
 

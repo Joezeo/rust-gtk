@@ -29,7 +29,7 @@ impl ObjectImpl for CustomButton {
         PROPERTIES.as_ref()
     }
 
-    fn set_property(&self, _obj: &Self::Type, _id: usize, value: &glib::Value, pspec: &ParamSpec) {
+    fn set_property(&self, _id: usize, value: &glib::Value, pspec: &ParamSpec) {
         match pspec.name() {
             "number" => {
                 let input_number = value.get().expect("The number need to be type 'i32'");
@@ -39,7 +39,7 @@ impl ObjectImpl for CustomButton {
         }
     }
 
-    fn property(&self, _obj: &Self::Type, _id: usize, pspec: &ParamSpec) -> glib::Value {
+    fn property(&self,  _id: usize, pspec: &ParamSpec) -> glib::Value {
         match pspec.name() {
             "number" => self.number.get().to_value(),
             _ => unimplemented!(),
@@ -51,21 +51,19 @@ impl ObjectImpl for CustomButton {
         static SIGNALS: Lazy<Vec<Signal>> = Lazy::new(|| {
             vec![Signal::builder(
                 "max-number-reached",
-                &[i32::static_type().into()],
-                <()>::static_type().into(),
             )
+            .param_types([i32::static_type()])
             .build()]
         });
         SIGNALS.as_ref()
     }
 
     // construct
-    fn constructed(&self, obj: &Self::Type) {
-        self.parent_constructed(obj);
+    fn constructed(&self) {
         // obj.set_label(&self.number.get().to_string());
         let instance = self.instance();
         instance
-            .bind_property("number", &instance, "label")
+            .bind_property("number", &*instance, "label")
             .flags(BindingFlags::SYNC_CREATE)
             .build();
     }
@@ -78,7 +76,7 @@ static MAX_NUMBER: i32 = 8;
 
 // Trait shared by all buttons
 impl ButtonImpl for CustomButton {
-    fn clicked(&self, _button: &Self::Type) {
+    fn clicked(&self) {
         // self.number.set(self.number.get() + 1);
         // button.set_label(&self.number.get().to_string())
         let incremented_number = self.number.get() + 1;

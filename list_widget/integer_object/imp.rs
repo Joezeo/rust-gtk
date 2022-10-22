@@ -24,7 +24,7 @@ impl ObjectImpl for IntegerObject {
         PROPERTIES.as_ref()
     }
 
-    fn set_property(&self, _obj: &Self::Type, _id: usize, value: &Value, pspec: &ParamSpec) {
+    fn set_property(&self, _id: usize, value: &Value, pspec: &ParamSpec) {
         match pspec.name() {
             "number" => {
                 let input_number = value.get().expect("The number need to be type 'i32'");
@@ -34,7 +34,7 @@ impl ObjectImpl for IntegerObject {
         }
     }
 
-    fn property(&self, _obj: &Self::Type, _id: usize, pspec: &ParamSpec) -> Value {
+    fn property(&self, _id: usize, pspec: &ParamSpec) -> Value {
         match pspec.name() {
             "number" => self.number.get().to_value(),
             _ => unimplemented!(),

@@ -7,9 +7,13 @@ use std::rc::Rc;
 
 use crate::custom_button::CustomButton;
 use glib::clone;
+use gtk::gdk::Display;
 use gtk::glib::{closure_local, BindingFlags, Value};
-use gtk::prelude::*;
-use gtk::{glib, Align, Application, ApplicationWindow, Box, Button, Orientation, Switch};
+use gtk::{
+    glib, Align, Application, ApplicationWindow, Box, Button, CssProvider, Orientation,
+    StyleContext, Switch,
+};
+use gtk::{prelude::*, HeaderBar};
 
 const APP_ID: &str = "org.gtk_rs.HelloWorld2";
 
@@ -23,10 +27,22 @@ fn main() {
     let app = Application::builder().application_id(APP_ID).build();
 
     // Connect to "activate" signal of `app`
+    app.connect_startup(|_| load_css());
     app.connect_activate(build_button_ui);
 
     // Run the application
     app.run();
+}
+
+fn load_css() {
+    let provider = CssProvider::new();
+    provider.load_from_data(include_bytes!("style.css"));
+
+    StyleContext::add_provider_for_display(
+        &Display::default().expect("Could not connect to a display"),
+        &provider,
+        gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+    );
 }
 
 fn build_button_ui(app: &Application) {
@@ -76,9 +92,13 @@ fn build_button_ui(app: &Application) {
         }),
     );
 
-    button_2.connect_closure("max-number-reached", false, closure_local!(move |_button: CustomButton, number: i32| {
-        println!("The maximum  number {} has been reached.", number);
-    }));
+    button_2.connect_closure(
+        "max-number-reached",
+        false,
+        closure_local!(move |_button: CustomButton, number: i32| {
+            println!("The maximum  number {} has been reached.", number);
+        }),
+    );
 
     // Create two buttons
     let button_increase = Button::builder()
@@ -99,16 +119,6 @@ fn build_button_ui(app: &Application) {
     // Reference-counted object with inner-mutability
     let number = Rc::new(Cell::new(0));
 
-    // Connect callbacks, when a button is clicked `number` will be changed
-    button_increase.connect_clicked(clone!(@weak number, @weak button_decrease => move |_| {
-        number.set(number.get() + 1);
-        button_decrease.set_label(&number.get().to_string());
-    }));
-    button_decrease.connect_clicked(clone!(@weak button_increase => move |_| {
-        number.set(number.get() - 1);
-        button_increase.set_label(&number.get().to_string());
-    }));
-
     // Add buttons to `gtk_box`
     let gtk_box = gtk::Box::builder()
         .orientation(Orientation::Vertical)
@@ -118,11 +128,34 @@ fn build_button_ui(app: &Application) {
     gtk_box.append(&button_1);
     gtk_box.append(&button_2);
 
+    // Connect callbacks, when a button is clicked `number` will be changed
+    button_increase.connect_clicked(
+        clone!(@weak number, @weak button_decrease => move |_| {
+            number.set(number.get() + 1);
+            button_decrease.set_label(&number.get().to_string());
+        }),
+    );
+    button_decrease.connect_clicked(clone!(@weak button_increase, @weak gtk_box => move |_| {
+        number.set(number.get() - 1);
+        button_increase.set_label(&number.get().to_string());
+
+        let dyn_button = Button::builder().label("Dynamic button")
+            .margin_top(12)
+            .margin_bottom(12)
+            .margin_start(12)
+            .margin_end(12)
+            .build();
+        gtk_box.append(&dyn_button);
+    }));
+
+    let header_bar = HeaderBar::builder().build();
+
     // Create a window
     let window = ApplicationWindow::builder()
         .application(app)
         .default_width(1280)
         .default_height(800)
+        .titlebar(&header_bar)
         .title("My GTK App")
         .child(&gtk_box)
         .build();
@@ -163,10 +196,13 @@ fn build_switch_ui(app: &Application) {
     gtk_box.append(&switch1);
     gtk_box.append(&switch2);
 
+    let _header_bar = HeaderBar::builder().css_name("header-bar").build();
+
     // Create a window
     let window = ApplicationWindow::builder()
         .application(app)
         .title("My GTK App")
+        // .titlebar(&header_bar)
         .child(&gtk_box)
         .build();
 

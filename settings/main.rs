@@ -48,7 +48,6 @@ fn build_ui(app: &Application) {
 
     let window = Window::new(app);
     window.set_child(Some(&switch));
-    window.set_title(Some("My GTK App"));
 
     window.present();
 }
