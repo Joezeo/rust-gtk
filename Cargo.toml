@@ -20,3 +20,15 @@ path = "event_loop/main.rs"
 [[bin]]
 name = "settings"
 path = "settings/main.rs"
+
+[[bin]]
+name = "list-widget"
+path = "list_widget/main.rs"
+
+[[bin]]
+name = "string-list"
+path = "string_list/main.rs"
+
+[[bin]]
+name = "hello_world"
+path = "hello_world/main.rs"
