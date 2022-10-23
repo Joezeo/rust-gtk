@@ -37,5 +37,9 @@ path = "hello_world/main.rs"
 name = "composite_templates"
 path = "composite_templates/main.rs"
 
+[[bin]]
+name = "todo"
+path = "todo/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"

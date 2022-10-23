@@ -6,16 +6,22 @@
             <summary>Default switch state</summary>
         </key>
         <key name="window-width" type="i">
-            <default>1280</default>
+            <default>-1</default>
             <summary>Default window width</summary>
         </key>
         <key name="window-height" type="i">
-            <default>800</default>
+            <default>-1</default>
             <summary>Default window height</summary>
         </key>
         <key name="is-maximized" type="b">
             <default>false</default>
             <summary>Default window maximized behaviour</summary>
+        </key>
+    </schema>
+    <schema id="org.gtk.Settings.Debug" path="/org/gtk/Settings/">
+        <key name="enable-inspector-keybinding" type="b">
+            <default>false</default>
+            <summary>Disable inspector</summary>
         </key>
     </schema>
 </schemalist>
