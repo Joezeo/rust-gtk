@@ -71,7 +71,7 @@ fn build_ui(app: &Application) {
     });
     let sort_model = SortListModel::new(Some(&filter_model), Some(&sorter));
 
-    // Bind data is unuse when set property expression.
+    /*  Bind data is unuse when set property expression. */
     // bind the data
     // factory.connect_bind(move |_, list_item| {
     //     let integer_object = list_item

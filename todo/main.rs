@@ -1,5 +1,7 @@
 #![cfg_attr(not(debug_assertions), not(debug_flags), windows_subsystem = "windows")]
 mod window;
+mod task_object;
+mod task_row;
 
 use gtk::gio;
 use gtk::prelude::*;

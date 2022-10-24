@@ -41,7 +41,16 @@ impl ObjectSubclass for Window {
     }
 }
 
-impl ObjectImpl for Window {}
+impl ObjectImpl for Window {
+    fn constructed(&self) {
+        self.parent_constructed();
+
+        let instance = self.instance();
+        instance.setup_tasks();
+        instance.setup_callbacks();
+        instance.setup_factory();
+    }
+}
 
 impl WidgetImpl for Window {}
 
