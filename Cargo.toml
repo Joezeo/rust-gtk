@@ -43,5 +43,9 @@ path = "composite_templates/main.rs"
 name = "todo"
 path = "todo/main.rs"
 
+[[bin]]
+name = "actions"
+path = "actions/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
