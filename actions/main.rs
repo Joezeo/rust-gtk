@@ -1,5 +1,6 @@
 use glib::clone;
 use gtk::gio::SimpleAction;
+use gtk::gio::SimpleActionGroup;
 use gtk::glib;
 use gtk::prelude::*;
 use gtk::Application;
@@ -23,6 +24,16 @@ fn build_ui(app: &Application) {
         .title("My GTK App")
         .width_request(360)
         .build();
+
+    let action_close = SimpleAction::new("close", None);
+    action_close.connect_activate(clone!(@weak window => move |_,_| {
+        window.close();
+    }));
+    window.add_action(&action_close);
+
+    let actions = SimpleActionGroup::new();
+    window.insert_action_group("win", Some(&actions));
+    actions.add_action(&action_close);
 
     let action_close = SimpleAction::new("close", None);
     action_close.connect_activate(clone!(@weak window => move |_,_| {
