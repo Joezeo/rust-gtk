@@ -55,5 +55,9 @@ path = "picture/main.rs"
 name = "reactions"
 path = "reactions/main.rs"
 
+[[bin]]
+name = "pixbuf"
+path = "pixbuf/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
