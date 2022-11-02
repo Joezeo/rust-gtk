@@ -9,4 +9,9 @@ fn main() {
         "todo/resources/resources.gresource.xml",
         "todo.gresource",
     );
+    glib_build_tools::compile_resources(
+        "action_composite_templates/resources",
+        "action_composite_templates/resources/resources.gresource.xml",
+        "action_composite_templates.gresource",
+    );
 }

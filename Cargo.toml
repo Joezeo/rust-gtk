@@ -59,5 +59,9 @@ path = "reactions/main.rs"
 name = "pixbuf"
 path = "pixbuf/main.rs"
 
+[[bin]]
+name = "action_composite_templates"
+path = "action_composite_templates/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
