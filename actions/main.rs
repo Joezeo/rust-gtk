@@ -5,6 +5,7 @@ use gtk::glib;
 use gtk::prelude::*;
 use gtk::Application;
 use gtk::ApplicationWindow;
+use gtk::Label;
 
 const APP_ID: &str = "com.toocol.actions";
 
@@ -25,21 +26,33 @@ fn build_ui(app: &Application) {
         .width_request(360)
         .build();
 
-    let action_close = SimpleAction::new("close", None);
-    action_close.connect_activate(clone!(@weak window => move |_,_| {
-        window.close();
-    }));
-    window.add_action(&action_close);
-
-    let actions = SimpleActionGroup::new();
-    window.insert_action_group("win", Some(&actions));
-    actions.add_action(&action_close);
-
-    let action_close = SimpleAction::new("close", None);
-    action_close.connect_activate(clone!(@weak window => move |_,_| {
-        window.close();
-    }));
-    window.add_action(&action_close);
+    action_and_group(&window);
 
     window.present();
+}
+
+pub fn action_and_group(window: &ApplicationWindow) {
+    // let action_close = SimpleAction::new("close", None);
+    // action_close.connect_activate(clone!(@weak window => move |_,_| {
+    //     window.close();
+    // }));
+    // window.add_action(&action_close);
+
+    let action_close = SimpleAction::new("close", None);
+    action_close.connect_activate(clone!(@weak window => move |_,_| {
+        window.close();
+    }));
+
+    let actions = SimpleActionGroup::new();
+    actions.add_action(&action_close);
+    window.insert_action_group("win", Some(&actions));
+}
+
+pub fn state_and_parameter(window: &ApplicationWindow) {
+    let original_state = 0;
+    let label = Label::builder()
+        .label(&format!("Counter: {original_state}"))
+        .build();
+    
+    // Create a button with label.
 }
