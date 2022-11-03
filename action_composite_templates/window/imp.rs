@@ -1,12 +1,16 @@
 use gtk::glib::subclass::InitializingObject;
 use gtk::{TemplateChild, Label, CompositeTemplate, subclass::prelude::ObjectSubclass};
-use gtk::glib;
+use gtk::{glib, Button};
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 
 #[derive(Default, CompositeTemplate)]
 #[template(resource = "/org/gtk_rs/example/window.ui")]
 pub struct Window {
+    #[template_child]
+    pub gtk_box: TemplateChild<gtk::Box>,
+    #[template_child]
+    pub button: TemplateChild<Button>,
     #[template_child]
     pub label: TemplateChild<Label>,
 }

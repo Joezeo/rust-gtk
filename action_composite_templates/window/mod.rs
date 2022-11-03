@@ -1,7 +1,8 @@
 mod imp;
 
 use glib::{clone, Object};
-use gtk::prelude::*;
+use gtk::gio::PropertyAction;
+use gtk::{prelude::*, Orientation};
 use gtk::subclass::prelude::*;
 use gtk::{
     gio::{self, SimpleAction},
@@ -52,7 +53,39 @@ impl Window {
             // Update label with new state
             label.set_label(&format!("Counter: {state}"));
         }));
-        
+
         self.add_action(&action_count);
+
+        // Add property action "sensitive-button" to `Window`.
+        let button = self.imp().button.get();
+        let action_sensitive_button = PropertyAction::new("sensitive-button", &button, "sensitive");
+        self.add_action(&action_sensitive_button);
+
+        // Add stateful action `orientation` to `Window` taking a string as parameter.
+        let gtk_box = self.imp().gtk_box.get();
+        let action_orientation = SimpleAction::new_stateful(
+            "orientation",
+            Some(&String::static_variant_type()),
+            &"Vertical".to_variant(),
+        );
+
+        action_orientation.connect_activate(clone!(@weak gtk_box => move |action, parameter| {
+            // Get parameter
+            let parameter = parameter
+                .expect("Counld not get parameter.")
+                .get::<String>()
+                .expect("The value needs to by type of `String`.");
+            
+            let orientation = match parameter.as_str() {
+                "Horizontal" => Orientation::Horizontal, 
+                "Vertical" => Orientation::Vertical,
+                _ => unreachable!(),
+            };
+
+            // Set the orientation
+            gtk_box.set_orientation(orientation);
+            action.set_state(&parameter.to_variant());
+        }));
+        self.add_action(&action_orientation);
     }
 }
