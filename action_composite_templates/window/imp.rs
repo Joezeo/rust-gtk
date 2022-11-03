@@ -1,8 +1,10 @@
 use gtk::glib::subclass::InitializingObject;
 use gtk::{TemplateChild, Label, CompositeTemplate, subclass::prelude::ObjectSubclass};
 use gtk::{glib, Button};
+use gtk::gio::Settings;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
+use once_cell::sync::OnceCell;
 
 #[derive(Default, CompositeTemplate)]
 #[template(resource = "/org/gtk_rs/example/window.ui")]
@@ -13,6 +15,8 @@ pub struct Window {
     pub button: TemplateChild<Button>,
     #[template_child]
     pub label: TemplateChild<Label>,
+
+    pub settings: OnceCell<Settings>,
 }
 
 #[glib::object_subclass]
@@ -35,7 +39,10 @@ impl ObjectImpl for Window {
     fn constructed(&self) {
         self.parent_constructed();
 
-        self.instance().setup_actions();
+        let obj = self.instance();
+        obj.setup_settings();
+        obj.setup_actions();
+        obj.bind_settings();
     }
 } 
 
