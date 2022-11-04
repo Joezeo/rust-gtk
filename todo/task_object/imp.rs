@@ -1,8 +1,10 @@
-use std::{rc::Rc, cell::RefCell};
-use gtk::prelude::*;
-use gtk::subclass::prelude::*;
+use gtk::{
+    glib::{self, ParamSpec, ParamSpecBoolean, ParamSpecString, Value},
+    prelude::*,
+    subclass::prelude::*,
+};
+use std::{cell::RefCell, rc::Rc};
 
-use gtk::glib::{self, ParamSpec, ParamSpecBoolean, ParamSpecString, Value};
 use once_cell::sync::Lazy;
 
 use super::TaskData;
@@ -33,8 +35,7 @@ impl ObjectImpl for TaskObject {
     fn set_property(&self, _id: usize, value: &Value, pspec: &ParamSpec) {
         match pspec.name() {
             "completed" => {
-                let input_value =
-                    value.get().expect("The value needs to be of type `bool`.");
+                let input_value = value.get().expect("The value needs to be of type `bool`.");
                 self.data.borrow_mut().completed = input_value;
             }
             "content" => {
