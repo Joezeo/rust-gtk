@@ -1,15 +1,20 @@
 #![allow(dead_code)]
 mod imp;
 
+use std::fs::File;
+
+use gtk::gio::{Settings, SimpleAction};
 use gtk::glib::{clone, Object};
 use gtk::prelude::StaticType;
 use gtk::subclass::prelude::*;
 use gtk::traits::EntryExt;
-use gtk::{gio, glib, Application, NoSelection};
+use gtk::{gio, glib, Application, CustomFilter, FilterListModel, NoSelection};
 use gtk::{prelude::*, SignalListItemFactory};
 
-use crate::task_object::TaskObject;
+use crate::task_object::{TaskData, TaskObject};
 use crate::task_row::TaskRow;
+use crate::util::data_path;
+use crate::APP_ID;
 
 glib::wrapper! {
     pub struct Window(ObjectSubclass<imp::Window>)
@@ -39,8 +44,21 @@ impl Window {
         self.imp().tasks.replace(Some(model));
 
         // Wrap model with selection and pass it to the list view
-        let selection_model = NoSelection::new(Some(&self.tasks()));
+        // let selection_model = NoSelection::new(Some(&self.tasks()));
+        // self.imp().tasks_list.set_model(Some(&selection_model));
+
+        // Wrap model with filter and selection and pass it to the list view
+        let filter_model = FilterListModel::new(Some(&self.tasks()), self.filter().as_ref());
+        let selection_model = NoSelection::new(Some(&filter_model));
         self.imp().tasks_list.set_model(Some(&selection_model));
+
+        // Filter model whenever the value of the key "filter" changes
+        self.settings().connect_changed(
+            Some("filter"),
+            clone!(@weak self as window, @weak filter_model => move |_, _| {
+                filter_model.set_filter(window.filter().as_ref());
+            }),
+        );
     }
 
     fn setup_callbacks(&self) {
@@ -113,5 +131,94 @@ impl Window {
         });
 
         self.imp().tasks_list.set_factory(Some(&factory));
+    }
+
+    fn setup_settings(&self) {
+        let settings = Settings::new(APP_ID);
+        self.imp()
+            .settings
+            .set(settings)
+            .expect("`settings` should not be set before calling `setup_settings`.");
+    }
+
+    fn settings(&self) -> &Settings {
+        self.imp()
+            .settings
+            .get()
+            .expect("`settings` should be set in `setup_settings`")
+    }
+
+    fn setup_actions(&self) {
+        // Create action from key `filter` and add to action group "win"
+        let filter_action = self.settings().create_action("filter");
+        self.add_action(&filter_action);
+
+        // Create action to remove done tasks and add to action group "win"
+        let remove_done_tasks_action = SimpleAction::new("remove-done-tasks", None);
+        remove_done_tasks_action.connect_activate(clone!(@weak self as window => move |_, _| {
+            let tasks = window.tasks();
+            let mut position = 0;
+            while let Some(item) = tasks.item(position) {
+                // Get `TaskObject` from `glib::object`
+                let task_object = item
+                    .downcast_ref::<TaskObject>()
+                    .expect("The object needs to be of type `TaskObject`.");
+
+                if task_object.is_completed() {
+                    tasks.remove(position);
+                } else {
+                    position += 1;
+                }
+            }
+        }));
+        self.add_action(&remove_done_tasks_action);
+    }
+
+    fn filter(&self) -> Option<CustomFilter> {
+        // Get filter_state from `settings`
+        let filter_state: String = self.settings().get("filter");
+
+        // Create CustomFilter
+        let filter_open = CustomFilter::new(|obj| {
+            let task_obj = obj
+                .downcast_ref::<TaskObject>()
+                .expect("The object needs to be of type `TaskObject`.");
+
+            // Only allow none completed tasks
+            !task_obj.is_completed()
+        });
+        let filter_done = CustomFilter::new(|obj| {
+            let task_obj = obj
+                .downcast_ref::<TaskObject>()
+                .expect("The object needs to be of type `TaskObject`.");
+
+            // Only allow none completed tasks
+            task_obj.is_completed()
+        });
+
+        // Return the correct filter
+        match filter_state.as_str() {
+            "All" => None,
+            "Open" => Some(filter_open),
+            "Done" => Some(filter_done),
+            _ => unreachable!(),
+        }
+    }
+
+    fn restore_data(&self) {
+        if let Ok(file) = File::open(data_path()) {
+            // Deserialize data from file to Vector
+            let buckup_data: Vec<TaskData> = serde_json::from_reader(file)
+                .expect("It should be possible to read `backup_data` from the json file.");
+
+            // Cenvert `Vec<TaskData>` to `Vec<TaskObject>`
+            let task_objects: Vec<TaskObject> = buckup_data
+                .into_iter()
+                .map(TaskObject::from_task_data)
+                .collect();
+            
+            // Insert restored objects into model
+            self.tasks().extend_from_slice(&task_objects);
+        }
     }
 }

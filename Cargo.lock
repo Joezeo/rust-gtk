@@ -856,6 +856,8 @@ dependencies = [
  "log",
  "log4rs",
  "once_cell",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
