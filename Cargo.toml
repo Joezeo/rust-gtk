@@ -66,5 +66,9 @@ path = "pixbuf/main.rs"
 name = "action_composite_templates"
 path = "action_composite_templates/main.rs"
 
+[[bin]]
+name = "tree_view"
+path = "tree_view/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"

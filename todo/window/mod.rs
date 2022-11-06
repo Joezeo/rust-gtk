@@ -378,8 +378,8 @@ impl Window {
             Some("New Collection"),
             Some(self),
             DialogFlags::MODAL
-                | DialogFlags::DESTROY_WITH_PARENT
-                | DialogFlags::USE_HEADER_BAR,
+                | DialogFlags::DESTROY_WITH_PARENT,
+                // | DialogFlags::USE_HEADER_BAR,
             &[
                 ("Cancel", ResponseType::Cancel),
                 ("Create", ResponseType::Accept),
