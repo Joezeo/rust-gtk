@@ -14,19 +14,16 @@ fn main() {
 }
 
 fn build_ui(app: &Application) {
-    let tree_view = TreeView::builder()
-        .headers_visible(false)
-        .build();
+    let tree_view = TreeView::builder().headers_visible(false).build();
 
     let cell_renderer = CellRendererText::new();
     let cell_area = CellAreaBox::builder()
-        .orientation(gtk::Orientation::Horizontal)
+        .orientation(gtk::Orientation::Vertical)
         .build();
-    cell_area.pack_start(&cell_renderer, true, true, true);
+    cell_area.pack_end(&cell_renderer, true, true, true);
 
-    let column = TreeViewColumn::builder()
-        .cell_area(&cell_area)
-        .build();
+    let column = TreeViewColumn::builder().cell_area(&cell_area).build();
+    column.add_attribute(&cell_renderer, "text", 0);
 
     tree_view.append_column(&column);
 
