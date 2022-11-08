@@ -70,5 +70,13 @@ path = "action_composite_templates/main.rs"
 name = "tree_view"
 path = "tree_view/main.rs"
 
+[[bin]]
+name = "drawing_area"
+path = "drawing_area/main.rs"
+
+[[bin]]
+name = "cairo_threads"
+path = "cairo_threads/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
