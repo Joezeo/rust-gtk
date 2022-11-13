@@ -1,0 +1,6 @@
+.overlay-node {
+    box-shadow: -5px 5px 15px #BBBBBB; 
+}
+.overlay-node:hover {
+    box-shadow: -5px 5px 15px #FFEFD6; 
+}

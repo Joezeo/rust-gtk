@@ -87,5 +87,9 @@ path = "font_icon/main.rs"
 name = "overlay"
 path = "overlay/main.rs"
 
+[[bin]]
+name = "shadow_border"
+path = "shadow_border/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
