@@ -83,5 +83,9 @@ path = "cairo_threads/main.rs"
 name = "font_icon"
 path = "font_icon/main.rs"
 
+[[bin]]
+name = "overlay"
+path = "overlay/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
