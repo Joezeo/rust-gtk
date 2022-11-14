@@ -91,5 +91,9 @@ path = "overlay/main.rs"
 name = "shadow_border"
 path = "shadow_border/main.rs"
 
+[[bin]]
+name = "paned"
+path = "paned/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
