@@ -1,4 +1,4 @@
-use gtk::{prelude::*, Application, ApplicationWindow, DrawingArea, Paned, Frame};
+use gtk::{prelude::*, Application, ApplicationWindow, DrawingArea, Paned};
 
 const APP_ID: &str = "com.test.paned";
 fn main() {
@@ -18,23 +18,26 @@ fn build_ui(app: &Application) {
         cr.set_source_rgb(0.5, 0.5, 0.5);
         cr.paint().unwrap();
     });
-    let frame1 = Frame::builder().width_request(100).child(&dw1).build();
 
     let dw2 = DrawingArea::builder()
         .content_width(300)
         .content_height(200)
+        .width_request(100)
         .build();
     dw2.set_draw_func(|_, cr, _, _| {
         cr.set_source_rgb(0.1, 0.1, 0.1);
         cr.paint().unwrap();
     });
-    let frame2 = Frame::builder().width_request(300).child(&dw2).build();
 
     let paned = Paned::builder()
         .orientation(gtk::Orientation::Horizontal)
-        .start_child(&frame1)
-        .end_child(&frame2)
+        .start_child(&dw1)
+        .end_child(&dw2)
         .build();
+    paned.set_shrink_start_child(false);
+    paned.set_shrink_end_child(false);
+    paned.set_resize_start_child(true);
+    paned.set_resize_end_child(true);
 
     paned.connect_max_position_notify(|paned| {
         println!("Max position: {}", paned.max_position());
@@ -44,9 +47,7 @@ fn build_ui(app: &Application) {
         println!("Min position: {}", paned.min_position());
     });
 
-    paned.connect_position_notify(|paned| {
-        println!("Position: {}", paned.position())
-    });
+    paned.connect_position_notify(|paned| println!("Position: {}", paned.position()));
 
     let window = ApplicationWindow::builder()
         .application(app)
