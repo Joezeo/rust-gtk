@@ -95,5 +95,13 @@ path = "shadow_border/main.rs"
 name = "paned"
 path = "paned/main.rs"
 
+[[bin]]
+name = "expand"
+path = "expand/main.rs"
+
+[[bin]]
+name = "widget_title_bar"
+path = "widget_title_bar/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"

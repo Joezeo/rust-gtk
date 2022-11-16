@@ -15,7 +15,7 @@ fn main() {
 
     app.connect_activate(build_ui);
 
-    app.set_accels_for_action("win.close", &["<Ctrl>W"]);
+    app.set_accels_for_action("win.none", &["<Ctrl><Shift>D"]);
 
     app.run();
 }
