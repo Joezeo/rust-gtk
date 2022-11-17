@@ -31,7 +31,7 @@ macro_rules! load_font {
             $(
                 let mut path = "font/".to_string();
                 path.push_str($x);
-                font_config::FontConfig::native_load_font_private(path);
+                font_config::FontConfig::native_load_font(path);
             )*
         }
      };
