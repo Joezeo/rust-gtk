@@ -27,10 +27,10 @@ fn build_ui(app: &Application) {
         let ver = (height - 1.) / 2.;
 
         // Background
-        cr.set_source_rgba(0.0, 0.0, 0.0, 1.0);
+        cr.set_source_rgba(0.0, 0.0, 0.0, 0.0);
         cr.paint().unwrap();
 
-        cr.set_source_rgba(0.5, 0.5, 0.5, 1.0);
+        cr.set_source_rgba(0.5, 0.5, 0.5, 0.8);
         cr.set_line_width(0.5);
 
         let start = (width - (single * 2. + margin * 2. + spined)) / 2.;
@@ -39,12 +39,13 @@ fn build_ui(app: &Application) {
         cr.line_to(start + single, ver);
         cr.stroke().unwrap();
 
-        cr.arc(width / 2., ver, spined, -PI, PI);
-        cr.fill().unwrap();
-
         cr.move_to(start + single + margin * 2. + spined, ver);
         cr.line_to(width - start, ver);
         cr.stroke().unwrap();
+
+        cr.set_source_rgba(0.5, 0.5, 0.5, 0.5);
+        cr.arc(width / 2., ver, spined, -PI, PI);
+        cr.fill().unwrap();
     });
 
     let window = ApplicationWindow::builder()
