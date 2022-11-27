@@ -116,5 +116,9 @@ path = "cairo_clock/main.rs"
 name = "transition_animation"
 path = "transition_animation/main.rs"
 
+[[bin]]
+name = "command_panel"
+path = "command_panel/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
