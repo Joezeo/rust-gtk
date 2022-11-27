@@ -112,5 +112,9 @@ path = "transition_seperator/main.rs"
 name = "cairo_clock"
 path = "cairo_clock/main.rs"
 
+[[bin]]
+name = "transition_animation"
+path = "transition_animation/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
