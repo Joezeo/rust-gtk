@@ -14,16 +14,13 @@ fn main() {
 }
 
 fn build_ui(app: &Application) {
-    let shortcut_label = DrawingArea::builder()
-        .margin_top(10)
-        .margin_start(10)
-        .build();
+    let shortcut_label = DrawingArea::builder().build();
     let shortcuts = ["Ctrl", "Shift", "D"];
-    let font_size = 10;
     let font_family = "Consolas";
+    let font_size = 10;
     let hor_inset = 5.;
     let ver_inset = 3.;
-    let join_inset = 3.;
+    let join_inset = 2.;
     let radius = 5.;
 
     let layouts = Rc::new(RefCell::new(vec![]));
@@ -41,7 +38,7 @@ fn build_ui(app: &Application) {
         );
         let pixel_size = layout.pixel_size();
         size.0 += pixel_size.0;
-        size.1 = size.1.max(pixel_size.1);
+        size.1 = size.1.max(pixel_size.1 + ver_inset as i32 * 2);
         layouts.borrow_mut().push(layout);
 
         if i != shortcuts.len() - 1 {
@@ -51,7 +48,7 @@ fn build_ui(app: &Application) {
             );
             let pixel_size = layout.pixel_size();
             size.0 += pixel_size.0;
-            size.1 += pixel_size.1;
+            size.1 = size.1.max(pixel_size.1 + ver_inset as i32 * 2);
             layouts.borrow_mut().push(layout);
         }
     }
@@ -65,9 +62,6 @@ fn build_ui(app: &Application) {
         let mut current_text_x = hor_inset;
         let degress = PI / 180.;
 
-        cr.set_line_width(1.);
-        cr.set_source_rgb(0., 0., 0.);
-
         for i in 0..layouts_clone.borrow().len() {
             let layout = &layouts_clone.borrow()[i];
             let pixel_size = layout.pixel_size();
@@ -75,7 +69,8 @@ fn build_ui(app: &Application) {
             if i % 2 == 0 {
                 let width = pixel_size.0 as f64 + hor_inset * 2.;
                 let height = pixel_size.1 as f64 + ver_inset;
-                // cr.rectangle(current_rec_x, 0., width, height);
+
+                cr.set_line_width(0.5);
 
                 // Draw the round corner.
                 cr.new_sub_path();
@@ -109,24 +104,41 @@ fn build_ui(app: &Application) {
                 );
                 cr.close_path();
 
+                cr.set_source_rgb(1., 1., 1.);
+                cr.fill_preserve().unwrap();
+                cr.set_source_rgb(0.5, 0.5, 0.5);
                 cr.stroke().unwrap();
+
                 current_rec_x += pixel_size.0 as f64 + hor_inset * 2.;
 
+                cr.set_source_rgb(0.2, 0.2, 0.2);
                 cr.move_to(current_text_x, ver_inset);
-                pangocairo::show_layout(&cr, &layout);
+                pangocairo::show_layout(cr, layout);
                 current_text_x += pixel_size.0 as f64 + hor_inset;
             } else {
+                cr.set_source_rgb(0.5, 0.5, 0.5);
                 cr.move_to(current_text_x + join_inset, ver_inset);
-                pangocairo::show_layout(&cr, &layout);
+                pangocairo::show_layout(cr, layout);
                 current_text_x += pixel_size.0 as f64 + hor_inset + join_inset * 2.;
                 current_rec_x += pixel_size.0 as f64 + join_inset * 2.;
             }
         }
     });
+
+    let shortcut = gtk::ShortcutLabel::builder()
+        .accelerator("<Shift>A")
+        .build();
+
+    let vbox = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .build();
+    vbox.append(&shortcut_label);
+    vbox.append(&shortcut);
+
     let window = ApplicationWindow::builder()
         .application(app)
         .title("Shortcut Label")
-        .child(&shortcut_label)
+        .child(&vbox)
         .build();
     window.present();
 }
