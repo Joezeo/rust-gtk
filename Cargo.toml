@@ -120,5 +120,9 @@ path = "transition_animation/main.rs"
 name = "command_panel"
 path = "command_panel/main.rs"
 
+[[bin]]
+name = "shortcut_label"
+path = "shortcut_label/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
