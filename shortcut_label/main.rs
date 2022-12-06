@@ -18,11 +18,12 @@ fn build_ui(app: &Application) {
         .margin_top(10)
         .margin_start(10)
         .build();
-    let shortcuts = ["Shift", "D"];
+    let shortcuts = ["Ctrl", "Shift", "D"];
     let font_size = 10;
     let font_family = "Consolas";
     let hor_inset = 5.;
     let ver_inset = 3.;
+    let join_inset = 3.;
     let radius = 5.;
 
     let layouts = Rc::new(RefCell::new(vec![]));
@@ -46,11 +47,7 @@ fn build_ui(app: &Application) {
         if i != shortcuts.len() - 1 {
             let layout = shortcut_label.create_pango_layout(None);
             layout.set_markup(
-                format!(
-                    "<span font_desc=\"{} {}\"> + </span>",
-                    font_family, font_size
-                )
-                .as_str(),
+                format!("<span font_desc=\"{} {}\">+</span>", font_family, font_size).as_str(),
             );
             let pixel_size = layout.pixel_size();
             size.0 += pixel_size.0;
@@ -114,13 +111,16 @@ fn build_ui(app: &Application) {
 
                 cr.stroke().unwrap();
                 current_rec_x += pixel_size.0 as f64 + hor_inset * 2.;
-            } else {
-                current_rec_x += pixel_size.0 as f64
-            }
 
-            cr.move_to(current_text_x, ver_inset);
-            pangocairo::show_layout(&cr, &layout);
-            current_text_x += pixel_size.0 as f64 + hor_inset;
+                cr.move_to(current_text_x, ver_inset);
+                pangocairo::show_layout(&cr, &layout);
+                current_text_x += pixel_size.0 as f64 + hor_inset;
+            } else {
+                cr.move_to(current_text_x + join_inset, ver_inset);
+                pangocairo::show_layout(&cr, &layout);
+                current_text_x += pixel_size.0 as f64 + hor_inset + join_inset * 2.;
+                current_rec_x += pixel_size.0 as f64 + join_inset * 2.;
+            }
         }
     });
     let window = ApplicationWindow::builder()
