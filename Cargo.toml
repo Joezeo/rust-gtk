@@ -124,5 +124,9 @@ path = "command_panel/main.rs"
 name = "shortcut_label"
 path = "shortcut_label/main.rs"
 
+[[bin]]
+name = "popover_menu"
+path = "popover_menu/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
