@@ -1,5 +1,6 @@
 use gtk::{
-    gdk_pixbuf::Pixbuf, prelude::*, Align, Application, ApplicationWindow, Inhibit, Picture,
+    gdk_pixbuf::Pixbuf, prelude::*, Align, Application, ApplicationWindow, GestureClick, Inhibit,
+    Picture,
 };
 
 fn main() {
@@ -55,6 +56,14 @@ fn build_ui(app: &Application) {
         Inhibit(false)
     });
     picture.add_controller(&controller);
+
+    ///// Mouse click event
+    let gesture_click = GestureClick::new();
+    gesture_click.set_button(3);
+    gesture_click.connect_released(move |_, _, x, y| {
+        println!("Press: {} {}", x, y);
+    });
+    window.add_controller(&gesture_click);
 
     let gtk_box = gtk::Box::builder().build();
     gtk_box.append(&scrolled_window);

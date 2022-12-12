@@ -128,5 +128,13 @@ path = "shortcut_label/main.rs"
 name = "popover_menu"
 path = "popover_menu/main.rs"
 
+[[bin]]
+name = "gesture_click"
+path = "gesture_click/main.rs"
+
+[[bin]]
+name = "custom_menu"
+path = "custom_menu/main.rs"
+
 [build-dependencies]
 glib-build-tools = "0.16.0"
