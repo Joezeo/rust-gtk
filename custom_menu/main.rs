@@ -1,8 +1,8 @@
 mod menu;
+mod custom_menu_model;
 
 use gtk::{
-    glib, glib::closure_local, prelude::*, Allocation, Application, ApplicationWindow, DrawingArea,
-    Overlay, Widget,
+    prelude::*, Application, ApplicationWindow, DrawingArea,
 };
 use menu::CustomMenu;
 
@@ -28,25 +28,14 @@ fn build_ui(app: &Application) {
     });
 
     let menu = CustomMenu::new();
-    menu.set_visible(false);
-
-    let overlay = Overlay::builder().child(&dw).build();
-    overlay.connect_closure(
-        "get-child-position",
-        false,
-        closure_local!(move |_: Overlay, widget: Widget, _allocation: &Allocation| {
-            println!("Get custom menu position, {}", widget.type_().name());
-            false
-        }),
-    );
-    overlay.add_overlay(&menu);
+    menu.set_parent(&dw);
 
     let window = ApplicationWindow::builder()
         .application(app)
         .title("Custom Menu")
         .default_width(1280)
         .default_height(800)
-        .child(&overlay)
+        .child(&dw)
         .build();
     window.present();
 }
